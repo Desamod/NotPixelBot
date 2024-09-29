@@ -410,7 +410,7 @@ class Tapper:
                         current_time = datetime.now()
                         start_time = randint(settings.NIGHT_SLEEP_START_TIME[0], settings.NIGHT_SLEEP_START_TIME[1])
                         end_time = randint(settings.NIGHT_SLEEP_END_TIME[0], settings.NIGHT_SLEEP_END_TIME[1])
-                        if start_time < current_time.hour < end_time:
+                        if start_time <= current_time.hour <= end_time:
                             sleep_time = randint(settings.SLEEP_TIME[0], settings.SLEEP_TIME[1])
                             logger.info(
                                 f"{self.session_name} | NIGHT_SLEEP activated, bot will sleep <y>{round(sleep_time / 60, 1)}</y> min")
