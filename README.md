@@ -7,38 +7,45 @@
 > 🇷 🇺 README in russian available [here](README-RU.md)
 
 ## Features  
-| Feature                                                   | Supported |
-|-----------------------------------------------------------|:---------:|
-| Multithreading                                            |     ✅     |
-| Proxy binding to session                                  |     ✅     |
-| User-Agent binding to session                             |     ✅     |
-| Support for tdata / pyrogram .session / telethon .session |     ✅     |
-| Registration in bot                                       |     ✅     |
-| Auto-paint                                                |     ✅     |
-| Auto-tasks                                                |     ✅     |
-| Auto-claim mining rewards                                 |     ✅     |
-| Auto-upgrade boosters                                     |     ✅     |
+| Feature                               | Supported |
+|---------------------------------------|:---------:|
+| Multithreading                        |     ✅     |
+| Proxy binding to session              |     ✅     |
+| User-Agent binding to session         |     ✅     |
+| Support for tdata / pyrogram .session |     ✅     |
+| Registration in bot                   |     ✅     |
+| Auto-paint                            |     ✅     |
+| Auto-tasks                            |     ✅     |
+| Auto-claim mining rewards             |     ✅     |
+| Auto-upgrade boosters                 |     ✅     |
+| Night sleep mode                      |     ✅     |
+| Analytics game events                 |     ✅     |
 
 
 
 
 ## [Settings](https://github.com/Desamod/NotPixelBot/blob/master/.env-example/)
-| Settings                |                                 Description                                 |
-|-------------------------|:---------------------------------------------------------------------------:|
-| **API_ID / API_HASH**   | Platform data from which to run the Telegram session (by default - android) |
-| **SLEEP_TIME**          |            Sleep time between cycles (by default - [3200, 3600])            |
-| **START_DELAY**         |           Delay between sessions at start (by default - [5, 20])            |
-| **AUTO_PAINT**          |                      Auto painting (by default - True)                      |
-| **AUTO_UPGRADE**        |                  Auto upgrade boosters (by default - True)                  |
-| **AUTO_MINING**         |                Auto claim mining reward (by default - True)                 |
-| **AUTO_TASK**           |                       Auto tasks (by default - True)                        |
-| **AUTO_UPGRADE_PAINT**  |                Auto upgrade paint reward (by default - True)                |
-| **MAX_PAINT_LEVEL**     |                Max level for paint booster (by default - 5)                 |
-| **AUTO_UPGRADE_CHARGE** |               Auto upgrade recharge speed (by default - True)               |
-| **MAX_CHARGE_LEVEL**    |               Max level for recharge booster (by default - 5)               |
-| **AUTO_UPGRADE_ENERGY** |                Auto upgrade energy limit (by default - True)                |
-| **MAX_ENERGY_LEVEL**    |                Max level for energy booster (by default - 2)                |
-| **REF_ID**              |                          Ref link for registration                          |
+| Settings                   |                                 Description                                 |
+|----------------------------|:---------------------------------------------------------------------------:|
+| **API_ID / API_HASH**      | Platform data from which to run the Telegram session (by default - android) |
+| **SLEEP_TIME**             |            Sleep time between cycles (by default - [3000, 8000])            |
+| **START_DELAY**            |           Delay between sessions at start (by default - [5, 60])            |
+| **AUTO_PAINT**             |                      Auto painting (by default - True)                      |
+| **AUTO_UPGRADE**           |                  Auto upgrade boosters (by default - True)                  |
+| **AUTO_MINING**            |                Auto claim mining reward (by default - True)                 |
+| **AUTO_TASK**              |                       Auto tasks (by default - True)                        |
+| **AUTO_UPGRADE_PAINT**     |                Auto upgrade paint reward (by default - True)                |
+| **MAX_PAINT_LEVEL**        |                Max level for paint booster (by default - 5)                 |
+| **AUTO_UPGRADE_CHARGE**    |               Auto upgrade recharge speed (by default - True)               |
+| **MAX_CHARGE_LEVEL**       |               Max level for recharge booster (by default - 5)               |
+| **AUTO_UPGRADE_ENERGY**    |                Auto upgrade energy limit (by default - True)                |
+| **MAX_ENERGY_LEVEL**       |                Max level for energy booster (by default - 2)                |
+| **USE_RANDOM_COLOR**       |               Use random color from game (by default - True)                |
+| **OWN_COLOR**              |        Own color if USE_RANDOM_COLOR is False (by default - #FFFFFF)        |
+| **NIGHT_SLEEP**            |                  Extra sleep at night (by default - True)                   |
+| **NIGHT_SLEEP_START_TIME** |          Time (hour) when Night mode starts (by default - [0, 2])           |
+| **NIGHT_SLEEP_END_TIME**   |           Time (hour) when Night mode ends (by default - [5, 7])            |
+| **REF_ID**                 |                          Ref link for registration                          |
 
 
 ## Quick Start 📚
