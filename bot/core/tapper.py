@@ -1,10 +1,11 @@
 import asyncio
+import json
 from datetime import datetime
 import os
 import random
 from time import time
 from typing import Any
-from urllib.parse import unquote, quote
+from urllib.parse import unquote, quote, parse_qs
 
 import aiohttp
 from aiohttp_proxy import ProxyConnector
@@ -72,26 +73,28 @@ class Tapper:
             ))
 
             auth_url = web_view.url
-
             tg_web_data = unquote(
                 string=unquote(string=auth_url.split('tgWebAppData=')[1].split('&tgWebAppVersion')[0]))
-            tg_web_data_parts = tg_web_data.split('&')
-
-            user_data = tg_web_data_parts[0].split('=')[1]
-            chat_instance = tg_web_data_parts[1].split('=')[1]
-            chat_type = tg_web_data_parts[2].split('=')[1]
-            start_param = tg_web_data_parts[3].split('start_param=')[1]
-            auth_date = tg_web_data_parts[4].split('=')[1]
-            hash_value = tg_web_data_parts[5].split('=')[1]
-            user_data_encoded = quote(user_data)
+            query_params = parse_qs(tg_web_data)
+            user_data = query_params.get('user')[0]
+            auth_date = query_params.get('auth_date')[0]
+            hash_value = query_params.get('hash')[0]
+            chat_instance = query_params.get('chat_instance')
+            chat_type = query_params.get('chat_type')
+            start_param = query_params.get('start_param')
+            user_data_encoded = quote(str(user_data))
             if peer_id == 'notpixel':
+                user_json = json.loads(user_data)
                 self.start_param = start_param
-                self.tg_id = user_data.split('"id":')[1].split(',"')[0]
-                self.locale = user_data.split('"language_code":"')[1].split('","')[0]
-                self.is_premium = '"is_premium":true' in user_data
+                self.tg_id = user_json.get('id')
+                self.locale = user_json.get('language_code')
+                self.is_premium = user_json.get('is_premium') is not None
 
-            init_data = (f"user={user_data_encoded}&chat_instance={chat_instance}&chat_type={chat_type}&"
-                         f"start_param={start_param}&auth_date={auth_date}&hash={hash_value}")
+            chat_param = f'&chat_instance={chat_instance[0]}&chat_type={chat_type[0]}' \
+                if chat_instance and chat_type else ''
+            start_param = f'&start_param={start_param[0]}' if start_param else ''
+            init_data = ''.join(
+                [f"user={user_data_encoded}", chat_param, start_param, f'&auth_date={auth_date}&hash={hash_value}'])
 
             if self.tg_client.is_connected:
                 await self.tg_client.disconnect()
@@ -172,7 +175,8 @@ class Tapper:
         try:
             auth_header = http_client.headers['Authorization']
             del http_client.headers['Authorization']
-            http_client.headers['Tga-Auth-Token'] = 'eyJhcHBfbmFtZSI6Ik5vdFBpeGVsIiwiYXBwX3VybCI6Imh0dHBzOi8vdC5tZS9ub3RwaXhlbC9hcHAiLCJhcHBfZG9tYWluIjoiaHR0cHM6Ly9hcHAubm90cHguYXBwIn0=!qE41yKlb/OkRyaVhhgdePSZm5Nk7nqsUnsOXDWqNAYE='
+            http_client.headers[
+                'Tga-Auth-Token'] = 'eyJhcHBfbmFtZSI6Ik5vdFBpeGVsIiwiYXBwX3VybCI6Imh0dHBzOi8vdC5tZS9ub3RwaXhlbC9hcHAiLCJhcHBfZG9tYWluIjoiaHR0cHM6Ly9hcHAubm90cHguYXBwIn0=!qE41yKlb/OkRyaVhhgdePSZm5Nk7nqsUnsOXDWqNAYE='
             http_client.headers['Content'] = random.choice(content_data)
             http_client.headers['Content-Length'] = str(len(str(payload)))
             response_event = await http_client.post('https://tganalytics.xyz/events', json=payload)
@@ -242,7 +246,7 @@ class Tapper:
                 http_client.headers['Content-Length'] = str(len(tg_web_data) + 18)
                 http_client.headers['X-Auth-Token'] = "Bearer null"
                 login_response = await http_client.post("https://api.notcoin.tg/auth/login",
-                                                   json={"webAppData": tg_web_data})
+                                                        json={"webAppData": tg_web_data})
                 login_response.raise_for_status()
                 login_data = await login_response.json()
                 bearer_token = login_data.get("data", {}).get("accessToken", None)
