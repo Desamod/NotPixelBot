@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/notpixel/app?startapp=f342952117)
+[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/notpixel/app?startapp=f7253650410)
 
 ## Recommendation before use
 
@@ -31,6 +31,7 @@
 | **SLEEP_TIME**             |            Sleep time between cycles (by default - [3000, 8000])            |
 | **START_DELAY**            |           Delay between sessions at start (by default - [5, 60])            |
 | **AUTO_PAINT**             |                      Auto painting (by default - True)                      |
+| **EXTRA_POINTS_MODE**      |               Drawing art with x3 points (by default - False)               |
 | **AUTO_UPGRADE**           |                  Auto upgrade boosters (by default - True)                  |
 | **AUTO_MINING**            |                Auto claim mining reward (by default - True)                 |
 | **AUTO_TASK**              |                       Auto tasks (by default - True)                        |
@@ -140,7 +141,7 @@ Here is an example of what accounts.json should look like:
 
 For support or questions, you can contact me
 
-[![Static Badge](https://img.shields.io/badge/Telegram-Channel-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/desforge_crypto)
+[![Static Badge](https://img.shields.io/badge/Telegram-Channel-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/desforge_cryptwo)
 
 
 
