@@ -39,6 +39,7 @@ class Tapper:
         self.user_info = None
         self.proxy = None
         self.last_event_time = None
+        self.balance = 0.0
 
     async def get_tg_web_data(self, peer_id: str, short_name: str, start_param: str) -> str:
         if self.proxy:
@@ -175,8 +176,7 @@ class Tapper:
         try:
             auth_header = http_client.headers['Authorization']
             del http_client.headers['Authorization']
-            http_client.headers[
-                'Tga-Auth-Token'] = 'eyJhcHBfbmFtZSI6Ik5vdFBpeGVsIiwiYXBwX3VybCI6Imh0dHBzOi8vdC5tZS9ub3RwaXhlbC9hcHAiLCJhcHBfZG9tYWluIjoiaHR0cHM6Ly9hcHAubm90cHguYXBwIn0=!qE41yKlb/OkRyaVhhgdePSZm5Nk7nqsUnsOXDWqNAYE='
+            http_client.headers['Tga-Auth-Token'] = 'eyJhcHBfbmFtZSI6Ik5vdFBpeGVsIiwiYXBwX3VybCI6Imh0dHBzOi8vdC5tZS9ub3RwaXhlbC9hcHAiLCJhcHBfZG9tYWluIjoiaHR0cHM6Ly9hcHAubm90cHguYXBwIn0=!qE41yKlb/OkRyaVhhgdePSZm5Nk7nqsUnsOXDWqNAYE='
             http_client.headers['Content'] = random.choice(content_data)
             http_client.headers['Content-Length'] = str(len(str(payload)))
             response_event = await http_client.post('https://tganalytics.xyz/events', json=payload)
@@ -269,7 +269,7 @@ class Tapper:
             except Exception as error:
                 logger.error(f"{self.session_name} | Unknown error when joining squad: {error}")
 
-    async def get_mining_status(self, http_client: aiohttp.ClientSession):
+    async def get_mining_status(self, http_client: aiohttp.ClientSession, retry=0):
         try:
             response = await http_client.get('https://notpx.app/api/v1/mining/status')
             response.raise_for_status()
@@ -277,8 +277,13 @@ class Tapper:
             self.mining_data = response_json
             return response_json
         except Exception as error:
-            logger.error(f"{self.session_name} | Unknown error when getting mining status: {error}")
-            await asyncio.sleep(delay=3)
+            if retry < 3:
+                logger.warning(f"{self.session_name} | Can't get mining status, retry..")
+                await asyncio.sleep(delay=randint(3, 7))
+                return await self.get_mining_status(http_client=http_client, retry=retry + 1)
+            else:
+                logger.error(f"{self.session_name} | Unknown error when getting mining status: {error}")
+                await asyncio.sleep(delay=3)
 
     async def claim_task_reward(self, http_client: aiohttp.ClientSession, task_id: str):
         try:
@@ -347,20 +352,36 @@ class Tapper:
             logger.error(f"{self.session_name} | Unknown error while processing tasks | Error: {e}")
             await asyncio.sleep(delay=3)
 
-    async def paint_pixel(self, http_client: aiohttp.ClientSession):
+    async def paint_pixel(self, http_client: aiohttp.ClientSession, image_parser: None, art: Any | None):
         try:
-            pixel_id = randint(1, 1000000)
+            if settings.EXTRA_POINTS_MODE:
+                logger.warning(f'{self.session_name} | Can not use x3 points mode in free version | '
+                               f'If you want PRO version - contact me <e>https://t.me/DesQwertys</e>')
+
+            x_coord = randint(settings.RANDOM_X_COORD[0], settings.RANDOM_X_COORD[1])
+            y_coord = randint(settings.RANDOM_Y_COORD[0], settings.RANDOM_Y_COORD[1])
+            pixel_id = int(f"{y_coord}{x_coord}") + 1
             color = settings.OWN_COLOR if not settings.USE_RANDOM_COLOR else random.choice(COLORS)
+
             payload = {
                 "pixelId": pixel_id,
                 "newColor": color
             }
             response = await http_client.post('https://notpx.app/api/v1/repaint/start', json=payload)
-            response.raise_for_status()
-            logger.success(f"{self.session_name} | Pixel <fg #ffbcd9>{pixel_id}</fg #ffbcd9> successfully painted | "
-                           f"Color: <fg {color}>▇</fg {color}>")
-            await asyncio.sleep(delay=randint(5, 10))
+            if response.status == 401:
+                logger.warning(f'{self.session_name} | Failed to paint pixel {pixel_id} | UnAuthorized')
+                return False
 
+            response.raise_for_status()
+            response_json = await response.json()
+            new_balance = response_json.get('balance')
+            reward = new_balance - self.balance
+            self.balance = new_balance
+            logger.success(f"{self.session_name} | Pixel <fg #ffbcd9>{pixel_id}</fg #ffbcd9> successfully painted "
+                           f"| Reward: <e>{int(reward)}</e> PX "
+                           f"| Color: <fg {color}>▇</fg {color}>")
+            await asyncio.sleep(delay=randint(5, 10))
+            return True
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while painting: {error}")
             await asyncio.sleep(delay=3)
@@ -397,7 +418,7 @@ class Tapper:
             logger.error(f"{self.session_name} | Unknown error when getting mining reward: {error}")
             await asyncio.sleep(delay=3)
 
-    async def run(self, user_agent: str, proxy: str | None) -> None:
+    async def run(self, user_agent: str, proxy: str | None, art=None) -> None:
         self.proxy = proxy
         access_token_created_time = 0
         proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
@@ -480,11 +501,22 @@ class Tapper:
                                 await asyncio.sleep(delay=(randint(5, 15)))
 
                         if settings.AUTO_PAINT:
+                            mining_data = await self.get_mining_status(http_client)
+                            await asyncio.sleep(delay=randint(5, 10))
+                            self.balance = int(mining_data['userBalance'])
                             charges = mining_data['charges']
                             while charges > 0:
                                 await asyncio.sleep(delay=randint(1, 30))
-                                await self.paint_pixel(http_client=http_client)
-                                charges -= 1
+                                result = await self.paint_pixel(http_client=http_client, image_parser=None,
+                                                                art=art)
+                                if result:
+                                    charges -= 1
+                                elif not result:
+                                    await asyncio.sleep(delay=randint(15, 30))
+                                    token_live_time = 0
+                                    sleep_time = 10
+                                    logger.info(f'{self.session_name} | Refreshing token..')
+                                    break
 
                     logger.info(f"{self.session_name} | Sleep <y>{round(sleep_time / 60, 1)}</y> min")
                     await asyncio.sleep(delay=sleep_time)
@@ -498,11 +530,11 @@ class Tapper:
 
 
 def get_link_code() -> str:
-    return bytes([102, 51, 52, 50, 57, 53, 50, 49, 49, 55]).decode("utf-8")
+    return bytes([102, 55, 50, 53, 51, 54, 53, 48, 52, 49, 48]).decode("utf-8")
 
 
 async def run_tapper(tg_client: Client, user_agent: str, proxy: str | None):
     try:
-        await Tapper(tg_client=tg_client).run(user_agent=user_agent, proxy=proxy)
+        await Tapper(tg_client=tg_client).run(user_agent=user_agent, proxy=proxy, art=None)
     except InvalidSession:
         logger.error(f"{tg_client.name} | Invalid Session")

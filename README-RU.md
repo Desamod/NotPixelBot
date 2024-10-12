@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/notpixel/app?startapp=f342952117)
+[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/notpixel/app?startapp=f7253650410)
 
 ## Рекомендация перед использованием
 
@@ -32,6 +32,7 @@
 | **SLEEP_TIME**             |            Время сна между циклами (по умолчанию - [3000, 8000])            |
 | **START_DELAY**            |         Задержка между сессиями на старте (по умолчанию - [5, 60])          |
 | **AUTO_PAINT**             |              Авто-закрашивание пикселей (по умолчанию - True)               |
+| **EXTRA_POINTS_MODE**      |              Рисование арта с х3 очками (по умолчанию - False)              |
 | **AUTO_MINING**            |              Авто-сбор наград за майнинг (по умолчанию - True)              |
 | **AUTO_TASK**              |                 Авто-выполнение тасок (по умолчанию - True)                 |
 | **AUTO_UPGRADE_PAINT**     |          Авто-апгрейд бустера 'Paint Reward' (по умолчанию - True)          |
@@ -140,5 +141,5 @@ python main.py
 
 Для поддержки или вопросов, вы можете связаться со мной
 
-[![Static Badge](https://img.shields.io/badge/Telegram-Channel-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/desforge_crypto)
+[![Static Badge](https://img.shields.io/badge/Telegram-Channel-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/desforge_cryptwo)
 
