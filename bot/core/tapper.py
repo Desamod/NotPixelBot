@@ -323,6 +323,8 @@ class Tapper:
                         case 'premium':
                             if not self.is_premium:
                                 continue
+                        case 'avatar':
+                            await asyncio.sleep(delay=task['value'])
                         case 'squad':
                             if self.user_info.get('squad') is None or self.user_info['squad'].get('id') is None:
                                 tg_web_data = await self.get_tg_web_data(peer_id='notgames_bot', short_name='squads',
